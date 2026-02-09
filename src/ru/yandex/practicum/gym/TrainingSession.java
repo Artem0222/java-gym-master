@@ -19,6 +19,7 @@ public class TrainingSession {
     }
 
     public Group getGroup() {
+
         return group;
     }
 

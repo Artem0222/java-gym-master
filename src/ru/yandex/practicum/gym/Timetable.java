@@ -50,16 +50,6 @@ public class Timetable {
         }
     };
 
-    private static class CoachTrainingCount {
-        Coach coach;
-        int count;
-
-        CoachTrainingCount(Coach coach, int count) {
-            this.coach = coach;
-            this.count = count;
-        }
-    }
-
     public List<CoachTrainingCount> getCountByCoaches() {
         Map<String, Integer> coachCountMap = new HashMap<>();
 

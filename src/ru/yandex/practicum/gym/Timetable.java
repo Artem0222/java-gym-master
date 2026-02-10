@@ -10,6 +10,7 @@ public class Timetable {
 
     public Timetable() {
         timetable = new HashMap<>();
+        coachesCounter = new HashMap<>();
         for (DayOfWeek day : DayOfWeek.values()) {
             timetable.put(day, new TreeMap<>(TIME_COMPARATOR));
         }
@@ -27,7 +28,7 @@ public class Timetable {
         daySchelude.put(time, sessionsAtTime);
 
         Coach currentCoach = trainingSession.getCoach();
-        coachesCounter.put(currentCoach, coachesCounter.getOrDefault(currentCoach,0) + 1);
+        coachesCounter.put(currentCoach, coachesCounter.getOrDefault(currentCoach, 0) + 1);
     }
 
     public TreeMap<TimeOfDay, List<TrainingSession>> getTrainingSessionsForDay(DayOfWeek dayOfWeek) {
@@ -37,8 +38,17 @@ public class Timetable {
         }
 
         return traininForDay;
-        }
+    }
 
+    public List<TrainingSession> getTrainingSessionsForDayAsList(DayOfWeek dayOfWeek) {
+        TreeMap<TimeOfDay, List<TrainingSession>> daySchedule = getTrainingSessionsForDay(dayOfWeek);
+        List<TrainingSession> allSessions = new ArrayList<>();
+
+        for (List<TrainingSession> sessions : daySchedule.values()) {
+            allSessions.addAll(sessions);
+        }
+        return allSessions;
+    }
 
 
     public List<TrainingSession> getTrainingSessionsForDayAndTime(DayOfWeek dayOfWeek, TimeOfDay timeOfDay) {
@@ -56,36 +66,36 @@ public class Timetable {
         }
     };
 
-    public List<CoachTrainingCount> getCountByCoaches() {
-        List<CoachTrainingCount> result = new ArrayList<>();
+    public List<CoachTrainingInfo> getCountByCoaches() {
+        List<CoachTrainingInfo> result = new ArrayList<>();
 
         for (Map.Entry<Coach, Integer> entry : coachesCounter.entrySet()) {
-            result.add(new CoachTrainingCount(entry.getKey(), entry.getValue()));
+            result.add(new CoachTrainingInfo(entry.getKey(), entry.getValue()));
         }
-        result.sort((c1, c2) -> Integer.compare(c2.getCount(), c1.getCount()));
+        result.sort((c1, c2) -> Integer.compare(c2.getTraininCount(), c1.getTraininCount()));
         return result;
     }
 
-    public static class CoachTrainingCount {
+    public static class CoachTrainingInfo {
         private Coach coach;
-        private int count;
+        private int traininCount;
 
-        public CoachTrainingCount(Coach coach, int count) {
+        public CoachTrainingInfo(Coach coach, int traininCount) {
             this.coach = coach;
-            this.count = count;
+            this.traininCount = traininCount;
         }
 
         public Coach getCoach() {
             return coach;
         }
 
-        public int getCount() {
-            return count;
+        public int getTraininCount() {
+            return traininCount;
         }
 
         @Override
         public String toString() {
-            return coach.getSurname() + " " + coach.getName() + " - " + count + " тренировок";
+            return coach.getSurname() + " " + coach.getName() + " - " + traininCount + " тренировок";
         }
     }
 }
